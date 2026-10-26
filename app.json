@@ -1,0 +1,68 @@
+{
+  "expo": {
+    "name": "一起算",
+    "slug": "shared-ledger",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "scheme": "sharedledger",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1A5F4A"
+    },
+    "locales": {
+      "zh-Hans": "./store/locales/zh-Hans.json"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.sharedledger.app",
+      "buildNumber": "1",
+      "infoPlist": {
+        "CFBundleAllowMixedLocalizations": true,
+        "CFBundleDevelopmentRegion": "zh-Hans",
+        "CFBundleDisplayName": "一起算",
+        "ITSAppUsesNonExemptEncryption": false,
+        "NSPhotoLibraryAddUsageDescription": "用于将催款卡片保存到相册，方便你分享给家人或室友。",
+        "NSPhotoLibraryUsageDescription": "用于将催款卡片保存到相册，方便你分享给家人或室友。"
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+          }
+        ]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1A5F4A"
+      },
+      "package": "com.sharedledger.app",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "replace-after-eas-init"
+      },
+      "privacyPolicyUrl": "https://zhangkaiwu222.github.io/shared-ledger/privacy/",
+      "supportUrl": "https://zhangkaiwu222.github.io/shared-ledger/support/",
+      "termsUrl": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+    },
+    "owner": "zhangkaiwu222"
+  }
+}
