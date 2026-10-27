@@ -8,7 +8,7 @@
 |------|------|
 | 应用名称 | 一起算 |
 | 副标题 | 情侣合租共同账本 · 自动分摊 |
-| Bundle ID | `com.sharedledger.app` |
+| Bundle ID | `com.zhangkaiwu222.sharedledger` |
 | 主类别 | 财务 / 工具（二选一，建议「财务」） |
 | 次类别 | 效率（可选） |
 | 版权 | © 2026 你的姓名 |
@@ -55,7 +55,7 @@ Pro 订阅：无限导出去水印、完整月度报表
 ```
 本应用无需登录即可使用全部免费功能。
 Pro 为自动续期订阅（产品 ID：
-com.sharedledger.app.pro.monthly / com.sharedledger.app.pro.yearly）。
+com.zhangkaiwu222.sharedledger.pro.monthly / com.zhangkaiwu222.sharedledger.pro.yearly）。
 演示路径：创建账本 → 记两笔不同付款人 → 清算页分享催款卡 → 报表页可见 Pro 墙。
 无账号体系，无需测试账号。
 ```
@@ -82,7 +82,7 @@ com.sharedledger.app.pro.monthly / com.sharedledger.app.pro.yearly）。
 
 | 显示名称 | 产品 ID | 期限 | 价格参考 |
 |----------|---------|------|----------|
-| 一起算 Pro 月度 | `com.sharedledger.app.pro.monthly` | 1 个月 | ¥15 |
-| 一起算 Pro 年度 | `com.sharedledger.app.pro.yearly` | 1 年 | ¥98 |
+| 一起算 Pro 月度 | `com.zhangkaiwu222.sharedledger.pro.monthly` | 1 个月 | ¥15 |
+| 一起算 Pro 年度 | `com.zhangkaiwu222.sharedledger.pro.yearly` | 1 年 | ¥98 |
 
 同一订阅群组，年度可设更高服务等级以便升级路径清晰。

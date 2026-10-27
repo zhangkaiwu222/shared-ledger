@@ -1,6 +1,7 @@
 import React, { forwardRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { colors } from '../constants/theme';
+import { useI18n } from '../i18n/I18nContext';
 import { formatYuan } from '../lib/split';
 
 type Props = {
@@ -15,24 +16,26 @@ export const SettleCard = forwardRef<View, Props>(function SettleCard(
   { ledgerName, fromName, toName, amount, watermark },
   ref,
 ) {
+  const { t } = useI18n();
+
   return (
     <View ref={ref} style={styles.card} collapsable={false}>
-      <Text style={styles.brand}>一起算</Text>
+      <Text style={styles.brand}>{t('appName')}</Text>
       <Text style={styles.ledger}>{ledgerName}</Text>
-      <Text style={styles.hint}>该转账啦</Text>
+      <Text style={styles.hint}>{t('settleCard.hint')}</Text>
       <Text style={styles.amount}>{formatYuan(amount)}</Text>
       <View style={styles.row}>
         <View style={styles.person}>
-          <Text style={styles.role}>付款</Text>
+          <Text style={styles.role}>{t('settleCard.payer')}</Text>
           <Text style={styles.name}>{fromName}</Text>
         </View>
         <Text style={styles.arrow}>→</Text>
         <View style={styles.person}>
-          <Text style={styles.role}>收款</Text>
+          <Text style={styles.role}>{t('settleCard.payee')}</Text>
           <Text style={styles.name}>{toName}</Text>
         </View>
       </View>
-      {watermark ? <Text style={styles.wm}>免费版 · 一起算 Pro 可去水印</Text> : null}
+      {watermark ? <Text style={styles.wm}>{t('settleCard.watermark')}</Text> : null}
     </View>
   );
 });

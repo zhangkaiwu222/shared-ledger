@@ -18,7 +18,7 @@
 - [ ] 注册 **Apple Developer Program**：$99/年（约 ¥688）— 上架必需
 - [ ] 建议先免费账号 + 模拟器/Expo Go 验证功能，准备上架再付费
 - [ ] Xcode / EAS 使用 **Automatically manage signing**
-- [ ] Bundle ID 固定为 `com.sharedledger.app`（勿中途乱改）
+- [ ] Bundle ID 固定为 `com.zhangkaiwu222.sharedledger`（勿中途乱改）
 
 ## B. 开发与合规功能（指南四、十章）
 

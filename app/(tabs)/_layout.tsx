@@ -1,16 +1,25 @@
 import { Tabs } from 'expo-router';
 import { Text } from 'react-native';
 import { colors } from '../../src/constants/theme';
+import { useI18n } from '../../src/i18n/I18nContext';
 
 function TabIcon({ label, focused }: { label: string; focused: boolean }) {
   return (
-    <Text style={{ fontSize: 12, fontWeight: focused ? '800' : '600', color: focused ? colors.brand : colors.muted }}>
+    <Text
+      style={{
+        fontSize: 12,
+        fontWeight: focused ? '800' : '600',
+        color: focused ? colors.brand : colors.muted,
+      }}
+    >
       {label}
     </Text>
   );
 }
 
 export default function TabsLayout() {
+  const { t } = useI18n();
+
   return (
     <Tabs
       screenOptions={{
@@ -31,33 +40,37 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: '账本',
-          tabBarIcon: ({ focused }) => <TabIcon label="账" focused={focused} />,
-          tabBarLabel: '明细',
+          title: t('tabs.homeTitle'),
+          tabBarIcon: ({ focused }) => <TabIcon label={t('tabs.iconHome')} focused={focused} />,
+          tabBarLabel: t('tabs.homeLabel'),
         }}
       />
       <Tabs.Screen
         name="balances"
         options={{
-          title: '谁欠谁',
-          tabBarIcon: ({ focused }) => <TabIcon label="清" focused={focused} />,
-          tabBarLabel: '清算',
+          title: t('tabs.balancesTitle'),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon label={t('tabs.iconBalances')} focused={focused} />
+          ),
+          tabBarLabel: t('tabs.balancesLabel'),
         }}
       />
       <Tabs.Screen
         name="report"
         options={{
-          title: '本月报表',
-          tabBarIcon: ({ focused }) => <TabIcon label="报" focused={focused} />,
-          tabBarLabel: '报表',
+          title: t('tabs.reportTitle'),
+          tabBarIcon: ({ focused }) => <TabIcon label={t('tabs.iconReport')} focused={focused} />,
+          tabBarLabel: t('tabs.reportLabel'),
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: '设置',
-          tabBarIcon: ({ focused }) => <TabIcon label="设" focused={focused} />,
-          tabBarLabel: '设置',
+          title: t('tabs.settingsTitle'),
+          tabBarIcon: ({ focused }) => (
+            <TabIcon label={t('tabs.iconSettings')} focused={focused} />
+          ),
+          tabBarLabel: t('tabs.settingsLabel'),
         }}
       />
     </Tabs>

@@ -17,6 +17,6 @@ export const LINKS = {
 };
 
 export const IAP_PRODUCT_IDS = {
-  monthly: 'com.sharedledger.app.pro.monthly',
-  yearly: 'com.sharedledger.app.pro.yearly',
+  monthly: 'com.zhangkaiwu222.sharedledger.pro.monthly',
+  yearly: 'com.zhangkaiwu222.sharedledger.pro.yearly',
 } as const;

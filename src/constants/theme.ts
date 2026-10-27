@@ -23,12 +23,15 @@ export const memberColors = [
 ];
 
 export const categories = [
-  { id: 'food', label: '餐饮', emoji: '🍜' },
-  { id: 'grocery', label: '日用', emoji: '🛒' },
-  { id: 'transport', label: '交通', emoji: '🚇' },
-  { id: 'rent', label: '房租', emoji: '🏠' },
-  { id: 'fun', label: '娱乐', emoji: '🎬' },
-  { id: 'other', label: '其他', emoji: '✨' },
+  { id: 'food', emoji: '🍜' },
+  { id: 'grocery', emoji: '🛒' },
+  { id: 'transport', emoji: '🚇' },
+  { id: 'rent', emoji: '🏠' },
+  { id: 'fun', emoji: '🎬' },
+  { id: 'util', emoji: '💡' },
+  { id: 'medical', emoji: '💊' },
+  { id: 'other', emoji: '✨' },
+  { id: 'transfer', emoji: '💸' },
 ] as const;
 
-export const FREE_EXPORT_LIMIT = 2;
+export type BuiltinCategoryId = (typeof categories)[number]['id'];

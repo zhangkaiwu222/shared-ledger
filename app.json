@@ -14,11 +14,15 @@
       "backgroundColor": "#1A5F4A"
     },
     "locales": {
-      "zh-Hans": "./store/locales/zh-Hans.json"
+      "zh-Hans": "./store/locales/zh-Hans.json",
+      "zh-Hant": "./store/locales/zh-Hant.json",
+      "en": "./store/locales/en.json",
+      "ja": "./store/locales/ja.json",
+      "ko": "./store/locales/ko.json"
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.sharedledger.app",
+      "bundleIdentifier": "com.zhangkaiwu222.sharedledger",
       "buildNumber": "1",
       "infoPlist": {
         "CFBundleAllowMixedLocalizations": true,
@@ -26,13 +30,15 @@
         "CFBundleDisplayName": "一起算",
         "ITSAppUsesNonExemptEncryption": false,
         "NSPhotoLibraryAddUsageDescription": "用于将催款卡片保存到相册，方便你分享给家人或室友。",
-        "NSPhotoLibraryUsageDescription": "用于将催款卡片保存到相册，方便你分享给家人或室友。"
+        "NSPhotoLibraryUsageDescription": "用于添加账单小票照片，以及将催款卡片保存到相册。"
       },
       "privacyManifests": {
         "NSPrivacyAccessedAPITypes": [
           {
             "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
-            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+            "NSPrivacyAccessedAPITypeReasons": [
+              "CA92.1"
+            ]
           }
         ]
       }
@@ -42,7 +48,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1A5F4A"
       },
-      "package": "com.sharedledger.app",
+      "package": "com.zhangkaiwu222.sharedledger",
       "versionCode": 1
     },
     "web": {
@@ -50,7 +56,15 @@
       "bundler": "metro"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-localization",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "用于添加账单小票照片。"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

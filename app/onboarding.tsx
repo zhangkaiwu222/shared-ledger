@@ -1,14 +1,24 @@
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Field, Title } from '../src/components/ui';
 import { colors } from '../src/constants/theme';
 import { useApp } from '../src/context/AppContext';
+import { useI18n } from '../src/i18n/I18nContext';
 
 export default function Onboarding() {
   const { createLedger } = useApp();
-  const [ledgerName, setLedgerName] = useState('我们的账本');
+  const { t } = useI18n();
+  const [ledgerName, setLedgerName] = useState(t('onboarding.defaultLedgerName'));
   const [nameA, setNameA] = useState('');
   const [nameB, setNameB] = useState('');
   const [nameC, setNameC] = useState('');
@@ -16,10 +26,14 @@ export default function Onboarding() {
   const onStart = () => {
     const names = [nameA, nameB, nameC].map((n) => n.trim()).filter(Boolean);
     if (names.length < 2) {
-      Alert.alert('再加一位', '至少填写两个人的名字，才能一起分摊。');
+      Alert.alert(t('onboarding.needTwoTitle'), t('onboarding.needTwoBody'));
       return;
     }
-    createLedger(ledgerName, names);
+    const res = createLedger(ledgerName || t('onboarding.defaultLedgerName'), names);
+    if (!res.ok) {
+      Alert.alert(t('ledgers.limitTitle'), t('ledgers.limitBody'));
+      return;
+    }
     router.replace('/(tabs)/home');
   };
 
@@ -31,43 +45,41 @@ export default function Onboarding() {
       >
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <View style={styles.hero}>
-            <Text style={styles.brand}>一起算</Text>
-            <Title>共同账本，一眼算清</Title>
-            <Text style={styles.desc}>
-              情侣、合租、小家庭共用。记一笔、自动分摊，月底不再扯皮。
-            </Text>
+            <Text style={styles.brand}>{t('appName')}</Text>
+            <Title>{t('onboarding.title')}</Title>
+            <Text style={styles.desc}>{t('onboarding.desc')}</Text>
           </View>
 
           <View style={styles.form}>
             <Field
-              label="账本名称"
+              label={t('onboarding.ledgerName')}
               value={ledgerName}
               onChangeText={setLedgerName}
-              placeholder="例如：同居小窝"
+              placeholder={t('onboarding.ledgerPlaceholder')}
             />
             <Field
-              label="成员 1"
+              label={t('onboarding.member1')}
               value={nameA}
               onChangeText={setNameA}
-              placeholder="你的名字"
+              placeholder={t('onboarding.member1Placeholder')}
               autoFocus
             />
             <Field
-              label="成员 2"
+              label={t('onboarding.member2')}
               value={nameB}
               onChangeText={setNameB}
-              placeholder="另一半 / 室友"
+              placeholder={t('onboarding.member2Placeholder')}
             />
             <Field
-              label="成员 3（可选）"
+              label={t('onboarding.member3')}
               value={nameC}
               onChangeText={setNameC}
-              placeholder="合租第三人"
+              placeholder={t('onboarding.member3Placeholder')}
             />
           </View>
 
-          <Button label="开始记账" onPress={onStart} />
-          <Text style={styles.tip}>数据保存在本机，可先自己验证完再考虑同步。</Text>
+          <Button label={t('onboarding.start')} onPress={onStart} />
+          <Text style={styles.tip}>{t('onboarding.tip')}</Text>
         </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -76,11 +88,7 @@ export default function Onboarding() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.bg },
-  content: {
-    padding: 24,
-    paddingBottom: 40,
-    gap: 28,
-  },
+  content: { padding: 24, paddingBottom: 40, gap: 28 },
   hero: { gap: 10, paddingTop: 24 },
   brand: {
     color: colors.brand,

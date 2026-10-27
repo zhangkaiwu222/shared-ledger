@@ -1,18 +1,14 @@
 import { router } from 'expo-router';
 import { Alert, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button, Card } from '../src/components/ui';
-import { colors } from '../src/constants/theme';
 import { IAP_PRODUCT_IDS, LINKS } from '../src/constants/links';
+import { colors } from '../src/constants/theme';
 import { useApp } from '../src/context/AppContext';
-
-const FEATURES = [
-  '催款卡片无限导出、去水印',
-  '完整月度分类报表与成员净额',
-  '同一 Apple ID 可恢复已购订阅',
-];
+import { useI18n } from '../src/i18n/I18nContext';
 
 export default function PaywallScreen() {
   const { isPro, unlockProDemo } = useApp();
+  const { t } = useI18n();
 
   const open = (url: string) => {
     void Linking.openURL(url);
@@ -20,15 +16,10 @@ export default function PaywallScreen() {
 
   const subscribePlaceholder = (plan: 'monthly' | 'yearly') => {
     Alert.alert(
-      '即将接入 App Store 订阅',
-      `产品 ID：${plan === 'monthly' ? IAP_PRODUCT_IDS.monthly : IAP_PRODUCT_IDS.yearly}\n\n按苹果审核要求，虚拟会员必须走 App 内购买。请在 Mac + 付费开发者账号下用 EAS/StoreKit 完成接入后再提交审核。`,
-    );
-  };
-
-  const restorePurchases = () => {
-    Alert.alert(
-      '恢复购买',
-      '正式版将调用 StoreKit 恢复订阅。若你已购买 Pro，登录同一 Apple ID 后点此即可恢复。',
+      t('paywall.iapTitle'),
+      t('paywall.iapBody', {
+        id: plan === 'monthly' ? IAP_PRODUCT_IDS.monthly : IAP_PRODUCT_IDS.yearly,
+      }),
     );
   };
 
@@ -36,25 +27,38 @@ export default function PaywallScreen() {
     return (
       <View style={styles.wrap}>
         <Card>
-          <Text style={styles.title}>你已经是 Pro</Text>
-          <Text style={styles.desc}>可无限导出催款卡并查看完整月报。</Text>
+          <Text style={styles.title}>{t('paywall.alreadyTitle')}</Text>
+          <Text style={styles.desc}>{t('paywall.alreadyDesc')}</Text>
           <View style={{ height: 12 }} />
-          <Button label="返回" onPress={() => router.back()} />
+          <Button label={t('paywall.back')} onPress={() => router.back()} />
         </Card>
       </View>
     );
   }
 
+  const features = [
+    t('paywall.f1'),
+    t('paywall.f2'),
+    t('paywall.f3'),
+    t('paywall.f4'),
+    t('paywall.f5'),
+    t('paywall.f6'),
+    t('paywall.f7'),
+    t('paywall.f8'),
+    t('paywall.f9'),
+    t('paywall.f10'),
+    t('paywall.f11'),
+    t('paywall.f12'),
+  ];
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={styles.wrap}>
-      <Text style={styles.brand}>一起算 Pro</Text>
-      <Text style={styles.headline}>算得清，才处得久</Text>
-      <Text style={styles.desc}>
-        自动续期订阅。订阅期内可使用下列全部 Pro 功能；可随时在系统设置中取消。
-      </Text>
+      <Text style={styles.brand}>{t('paywall.brand')}</Text>
+      <Text style={styles.headline}>{t('paywall.headline')}</Text>
+      <Text style={styles.desc}>{t('paywall.desc')}</Text>
 
       <Card style={{ marginTop: 16, gap: 12 }}>
-        {FEATURES.map((f) => (
+        {features.map((f) => (
           <Text key={f} style={styles.feature}>
             ✓  {f}
           </Text>
@@ -63,51 +67,59 @@ export default function PaywallScreen() {
 
       <View style={styles.prices}>
         <Card style={styles.priceCard}>
-          <Text style={styles.priceLabel}>月度订阅</Text>
+          <Text style={styles.priceLabel}>{t('paywall.monthly')}</Text>
           <Text style={styles.price}>¥15</Text>
-          <Text style={styles.priceHint}>每 1 个月自动续费</Text>
+          <Text style={styles.priceHint}>{t('paywall.perMonth')}</Text>
           <View style={{ height: 8 }} />
-          <Button label="订阅月度" onPress={() => subscribePlaceholder('monthly')} />
+          <Button
+            label={t('paywall.subscribeMonthly')}
+            onPress={() => subscribePlaceholder('monthly')}
+          />
         </Card>
         <Card style={[styles.priceCard, styles.priceBest]}>
-          <Text style={styles.badge}>更划算</Text>
-          <Text style={styles.priceLabel}>年度订阅</Text>
+          <Text style={styles.badge}>{t('paywall.best')}</Text>
+          <Text style={styles.priceLabel}>{t('paywall.yearly')}</Text>
           <Text style={styles.price}>¥98</Text>
-          <Text style={styles.priceHint}>每 1 年自动续费</Text>
+          <Text style={styles.priceHint}>{t('paywall.perYear')}</Text>
           <View style={{ height: 8 }} />
-          <Button label="订阅年度" onPress={() => subscribePlaceholder('yearly')} />
+          <Button
+            label={t('paywall.subscribeYearly')}
+            onPress={() => subscribePlaceholder('yearly')}
+          />
         </Card>
       </View>
 
-      <Button label="恢复购买" variant="secondary" onPress={restorePurchases} />
-      <Button label="先继续免费用" variant="ghost" onPress={() => router.back()} />
+      <Button
+        label={t('paywall.restore')}
+        variant="secondary"
+        onPress={() => Alert.alert(t('paywall.restoreTitle'), t('paywall.restoreBody'))}
+      />
+      <Button label={t('paywall.continueFree')} variant="ghost" onPress={() => router.back()} />
 
       {__DEV__ ? (
         <Button
-          label="开发调试：演示解锁 Pro"
+          label={t('paywall.demoUnlock')}
           variant="ghost"
           onPress={() => {
             unlockProDemo();
-            Alert.alert('已解锁（仅开发包）', '正式包不会显示此入口。');
+            Alert.alert(t('paywall.demoTitle'), t('paywall.demoBody'));
             router.back();
           }}
         />
       ) : null}
 
-      <Text style={styles.legal}>
-        付款将计入你的 Apple ID 账户。订阅会在当前周期结束前 24 小时自动续订并扣费，除非你提前关闭自动续订。管理或取消：设置 → Apple ID → 订阅。
-      </Text>
+      <Text style={styles.legal}>{t('paywall.legal')}</Text>
       <Text style={styles.links}>
         <Text style={styles.link} onPress={() => open(LINKS.terms)}>
-          使用条款（EULA）
+          {t('paywall.terms')}
         </Text>
         {'  ·  '}
         <Text style={styles.link} onPress={() => open(LINKS.privacy)}>
-          隐私政策
+          {t('paywall.privacy')}
         </Text>
         {'  ·  '}
         <Text style={styles.link} onPress={() => open(LINKS.support)}>
-          技术支持
+          {t('paywall.support')}
         </Text>
       </Text>
     </ScrollView>
@@ -115,16 +127,8 @@ export default function PaywallScreen() {
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    padding: 20,
-    gap: 10,
-    paddingBottom: 40,
-  },
-  brand: {
-    color: colors.brand,
-    fontWeight: '800',
-    letterSpacing: 1,
-  },
+  wrap: { padding: 20, gap: 10, paddingBottom: 40 },
+  brand: { color: colors.brand, fontWeight: '800', letterSpacing: 1 },
   headline: {
     fontSize: 28,
     fontWeight: '800',
@@ -159,15 +163,6 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     textAlign: 'center',
   },
-  links: {
-    textAlign: 'center',
-    fontSize: 12,
-    color: colors.muted,
-    marginTop: 4,
-  },
-  link: {
-    color: colors.brand,
-    fontWeight: '700',
-    textDecorationLine: 'underline',
-  },
+  links: { textAlign: 'center', fontSize: 12, color: colors.muted, marginTop: 4 },
+  link: { color: colors.brand, fontWeight: '700', textDecorationLine: 'underline' },
 });
