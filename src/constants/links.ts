@@ -6,10 +6,10 @@ const extra = Constants.expoConfig?.extra ?? {};
 export const LINKS = {
   privacy:
     (extra.privacyPolicyUrl as string) ||
-    'https://zhangkaiwu222.github.io/shared-ledger-site/privacy/',
+    'https://zhangkaiwu222.github.io/shared-ledger/privacy/',
   support:
     (extra.supportUrl as string) ||
-    'https://zhangkaiwu222.github.io/shared-ledger-site/support/',
+    'https://zhangkaiwu222.github.io/shared-ledger/support/',
   /** Apple Standard EULA — acceptable for simple subscription apps */
   terms:
     (extra.termsUrl as string) ||
