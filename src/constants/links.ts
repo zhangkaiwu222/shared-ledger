@@ -6,10 +6,10 @@ const extra = Constants.expoConfig?.extra ?? {};
 export const LINKS = {
   privacy:
     (extra.privacyPolicyUrl as string) ||
-    'https://zhangkaiwu222.github.io/shared-ledger/privacy/',
+    'https://zhangkaiwu222.github.io/shared-ledger-site/privacy/',
   support:
     (extra.supportUrl as string) ||
-    'https://zhangkaiwu222.github.io/shared-ledger/support/',
+    'https://zhangkaiwu222.github.io/shared-ledger-site/support/',
   /** Apple Standard EULA — acceptable for simple subscription apps */
   terms:
     (extra.termsUrl as string) ||
@@ -20,3 +20,8 @@ export const IAP_PRODUCT_IDS = {
   monthly: 'com.zhangkaiwu222.sharedledger.pro.monthly',
   yearly: 'com.zhangkaiwu222.sharedledger.pro.yearly',
 } as const;
+
+export const IAP_SUBSCRIPTION_SKUS = [
+  IAP_PRODUCT_IDS.monthly,
+  IAP_PRODUCT_IDS.yearly,
+] as const;

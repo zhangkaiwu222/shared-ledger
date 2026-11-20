@@ -64,19 +64,20 @@
         {
           "photosPermission": "用于添加账单小票照片。"
         }
-      ]
+      ],
+      "expo-iap"
     ],
     "experiments": {
       "typedRoutes": true
     },
     "extra": {
       "eas": {
-        "projectId": "replace-after-eas-init"
+        "projectId": "69721ba0-6bc5-47be-9836-41af1210d901"
       },
-      "privacyPolicyUrl": "https://zhangkaiwu222.github.io/shared-ledger/privacy/",
-      "supportUrl": "https://zhangkaiwu222.github.io/shared-ledger/support/",
+      "privacyPolicyUrl": "https://zhangkaiwu222.github.io/shared-ledger-site/privacy/",
+      "supportUrl": "https://zhangkaiwu222.github.io/shared-ledger-site/support/",
       "termsUrl": "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
     },
-    "owner": "zhangkaiwu222"
+    "owner": "zhangkaiwu"
   }
 }
