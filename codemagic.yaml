@@ -54,9 +54,17 @@ workflows:
 
       - name: Fetch signing certificate and provisioning profile
         script: |
+          # Map the stored secrets to the names expected by the codemagic CLI tools.
+          export APP_STORE_CONNECT_PRIVATE_KEY="$(printf '%s' "$APP_STORE_CONNECT_API_KEY_KEY" | base64 --decode)"
+          export APP_STORE_CONNECT_KEY_IDENTIFIER="$APP_STORE_CONNECT_API_KEY_KEY_ID"
+          export APP_STORE_CONNECT_ISSUER_ID="$APP_STORE_CONNECT_API_KEY_ISSUER_ID"
+          export CERTIFICATE_PRIVATE_KEY="$(openssl genrsa 2048 2>/dev/null)"
           app-store-connect fetch-signing-files "$BUNDLE_ID" \
             --type IOS_APP_STORE \
             --create
+
+      - name: Add certificates to keychain
+        script: keychain add-certificates
 
       - name: Apply provisioning profile
         script: xcode-project use-profiles
