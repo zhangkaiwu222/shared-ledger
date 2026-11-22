@@ -120,6 +120,8 @@ type AppContextValue = {
   enablePin: (pin: string) => Promise<{ ok: boolean; reason?: string }>;
   disablePin: (pin: string) => Promise<{ ok: boolean; reason?: string }>;
   unlockProDemo: () => void;
+  /** Sync Pro from StoreKit (IAP). Preserves dev demo unlock when inactive. */
+  syncProFromStore: (active: boolean, productId?: string) => void;
   markExportUsed: () => boolean;
   resetAll: () => Promise<void>;
 };
@@ -694,9 +696,30 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       ...prev,
       subscription: {
         isPro: true,
+        source: 'demo',
         demoUnlockedAt: new Date().toISOString(),
       },
     }));
+  }, []);
+
+  const syncProFromStore = useCallback((active: boolean, productId?: string) => {
+    setData((prev) => {
+      if (active) {
+        return {
+          ...prev,
+          subscription: {
+            isPro: true,
+            productId,
+            source: 'store',
+          },
+        };
+      }
+      if (__DEV__ && prev.subscription.demoUnlockedAt) return prev;
+      return {
+        ...prev,
+        subscription: { isPro: false },
+      };
+    });
   }, []);
 
   const markExportUsed = useCallback(() => {
@@ -769,6 +792,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       enablePin,
       disablePin,
       unlockProDemo,
+      syncProFromStore,
       markExportUsed,
       resetAll,
     }),
@@ -820,6 +844,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       enablePin,
       disablePin,
       unlockProDemo,
+      syncProFromStore,
       markExportUsed,
       resetAll,
     ],

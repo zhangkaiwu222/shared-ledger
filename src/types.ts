@@ -104,9 +104,16 @@ export type MemberBalance = {
   net: number;
 };
 
+/** `store` = App Store / IAP; `demo` = __DEV__ unlock only */
+export type SubscriptionSource = 'store' | 'demo';
+
 export type SubscriptionState = {
   isPro: boolean;
+  /** Set when Pro comes from App Store subscription */
+  productId?: string;
   demoUnlockedAt?: string;
+  /** How Pro was unlocked — used for settings display */
+  source?: SubscriptionSource;
 };
 
 export type AppData = {

@@ -193,6 +193,12 @@ const en = {
       'Free covers everyday splitting. Pro adds multi-ledger, budgets, recurring bills, CSV, and deeper reports.',
     viewPro: 'View Pro',
     manageSub: 'Manage subscription',
+    restorePurchases: 'Restore purchases',
+    subPlan: 'Plan: %{plan}',
+    subProductId: 'Product ID: %{id}',
+    subSourceStore: 'Pro via App Store subscription',
+    subSourceDemo: 'Pro unlocked (developer preview only)',
+    subSourceUnknown: 'Pro active',
     dataPrivacy: 'Data & privacy',
     dataHint: 'Expenses stay on device by default. No account required. Tap a row to edit; long-press to delete.',
     privacy: 'Privacy policy',
@@ -360,12 +366,20 @@ const en = {
     demoUnlock: 'Dev: unlock Pro',
     demoTitle: 'Unlocked (dev only)',
     demoBody: 'This button is hidden in production builds.',
-    iapTitle: 'App Store subscription coming next',
-    iapBody:
-      'Product ID: %{id}\n\nApple requires virtual memberships to use In-App Purchase. Wire StoreKit/EAS before App Review.',
+    iapTitle: 'Subscribe',
+    storeLoading: 'Connecting to the App Store…',
+    storeConnectFailed:
+      'Could not connect to the App Store. Sign in with an Apple ID in Settings and reopen the app.',
+    storeNoProducts:
+      'Subscription products were not found. Check product IDs and App Store Connect setup.',
+    storeFetchTimeout: 'Loading prices timed out. Tap Retry or try subscribing anyway.',
+    retryStore: 'Retry',
+    storeUnavailable: 'Use the TestFlight or App Store build on iPhone to subscribe.',
+    purchaseFailed: 'Purchase could not be completed. Try again later.',
+    purchaseSuccess: 'Pro is active. Thank you!',
     restoreTitle: 'Restore purchases',
-    restoreBody:
-      'Production builds will restore via StoreKit. If you already bought Pro, use the same Apple ID.',
+    restoreOk: 'Your Pro subscription was restored.',
+    restoreNone: 'No subscription found for this Apple ID.',
     legal:
       'Payment will be charged to your Apple ID. Subscription renews within 24 hours before the period ends unless cancelled. Manage in Settings → Apple ID → Subscriptions.',
     terms: 'Terms (EULA)',

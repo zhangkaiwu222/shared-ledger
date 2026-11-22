@@ -28,7 +28,8 @@
 - [x] Paywall 含：价格、时长、权益、自动续订说明、恢复购买、隐私/条款链接
 - [x] 权限文案具体化（相册/保存催款卡用途）
 - [x] `ITSAppUsesNonExemptEncryption = false`（未使用自定义加密）
-- [ ] 接入正式 `expo-iap` / StoreKit 2，沙盒账号测订阅与恢复购买
+- [x] 接入正式 `expo-iap` / StoreKit 2（见 `src/iap/IapProvider.tsx`）
+- [ ] Connect 创建订阅商品 + 沙盒账号测订阅与恢复购买（见 `store/SUBSCRIPTION_ASC_SETUP.md`）
 - [ ] App 内**不要**做「检查更新」跳转外链更新包
 - [ ] 截图与文案**不要**出现 Android 字样/设备
 
@@ -42,6 +43,8 @@
 - [ ] App 隐私问卷：声明「仅设备本地存储财务相关数据」，无追踪则勿勾选跨 App 追踪
 
 ## D. 测试（指南五～六章）
+
+详见 [`PHONE_TEST_BUILD.md`](./PHONE_TEST_BUILD.md)（Windows 用 EAS，勿硬上 Xcode Cloud）。
 
 - [ ] 真机测：记账、清算、分享、Paywall 链接可打开
 - [ ] TestFlight 内部测试至少一轮（正式上架前强烈建议）

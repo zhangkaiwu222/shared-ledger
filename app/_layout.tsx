@@ -4,6 +4,7 @@ import { ActivityIndicator, View } from 'react-native';
 import { PinLock } from '../src/components/PinLock';
 import { colors } from '../src/constants/theme';
 import { AppProvider, useApp } from '../src/context/AppContext';
+import { IapProvider } from '../src/iap/IapProvider';
 import { I18nProvider, useI18n } from '../src/i18n/I18nContext';
 
 function RootNavigator() {
@@ -59,7 +60,9 @@ export default function RootLayout() {
   return (
     <I18nProvider>
       <AppProvider>
-        <RootNavigator />
+        <IapProvider>
+          <RootNavigator />
+        </IapProvider>
       </AppProvider>
     </I18nProvider>
   );

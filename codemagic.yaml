@@ -1,0 +1,73 @@
+# Codemagic CI/CD — 一起算 (Expo / React Native, SDK 54)
+# Free plan: Mac mini M2, 500 min/month, 1 parallel build.
+# Signing uses the App Store Connect API key (auto-created cert + profile),
+# no .p12 / .mobileprovision needs to be committed to the repo.
+#
+# Required secret environment group in Codemagic UI -> "appstore_signing":
+#   APP_STORE_CONNECT_API_KEY_KEY_ID      = P8W8B6ZTXW
+#   APP_STORE_CONNECT_API_KEY_ISSUER_ID   = eee92558-8a20-44d9-9ca3-49dbf97b9d15
+#   APP_STORE_CONNECT_API_KEY_KEY         = <base64 of secrets/AuthKey_P8W8B6ZTXW.p8 contents>
+# Generate the key value with:
+#   base64 -i secrets/AuthKey_P8W8B6ZTXW.p8 | tr -d '\n'
+
+workflows:
+  ios-appstore:
+    name: 一起算 — iOS App Store signed IPA
+    max_build_duration: 120
+    instance_type: mac_mini_m2
+
+    environment:
+      vars:
+        BUNDLE_ID: com.zhangkaiwu222.sharedledger
+      xcode: latest
+      groups:
+        - appstore_signing
+
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+      cancel_previous_builds: true
+
+    scripts:
+      - name: Set up Node 20
+        script: |
+          node --version
+          npm --version
+
+      - name: Install dependencies
+        script: npm ci
+
+      - name: Generate native iOS project (Expo prebuild)
+        script: npx expo prebuild --platform ios --clean
+
+      - name: Install CocoaPods
+        script: |
+          cd ios
+          pod install --repo-update
+          cd ..
+
+      - name: Initialize keychain
+        script: keychain initialize
+
+      - name: Fetch signing certificate and provisioning profile
+        script: |
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+
+      - name: Apply provisioning profile
+        script: xcode-project use-profiles
+
+      - name: Build signed IPA
+        script: |
+          WORKSPACE=$(find ios -maxdepth 1 -name "*.xcworkspace" -type d | head -1)
+          SCHEME=$(find "$WORKSPACE" -name "*.xcscheme" 2>/dev/null | head -1 | sed 's/.*\///;s/\.xcscheme//')
+          echo "Workspace: $WORKSPACE | Scheme: $SCHEME"
+          xcode-project build-ipa --workspace "$WORKSPACE" --scheme "$SCHEME"
+
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - ios/ios/*.app.dSYM.zip

@@ -54,10 +54,11 @@ Pro 订阅：无限导出去水印、完整月度报表
 
 ```
 本应用无需登录即可使用全部免费功能。
-Pro 为自动续期订阅（产品 ID：
-com.zhangkaiwu222.sharedledger.pro.monthly / com.zhangkaiwu222.sharedledger.pro.yearly）。
-演示路径：创建账本 → 记两笔不同付款人 → 清算页分享催款卡 → 报表页可见 Pro 墙。
-无账号体系，无需测试账号。
+Pro 为 App 内自动续期订阅（StoreKit），产品 ID：
+com.zhangkaiwu222.sharedledger.pro.monthly、com.zhangkaiwu222.sharedledger.pro.yearly。
+沙盒测试：iPhone 设置 → App Store → 沙盒账户登录后，打开 App → 升级 Pro 完成订阅；Paywall 底部可「恢复购买」。
+演示路径：创建账本 → 记两笔不同付款人 → 清算页分享催款卡 → 报表页触发 Pro。
+无账号体系；已在下方填写沙盒测试员联系方式。
 ```
 
 ## 必填链接（上架前替换为真实可访问地址）

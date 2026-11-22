@@ -34,6 +34,20 @@ npx expo start
 
 手机装 Expo Go 扫码；分享卡片建议真机。
 
+## 真机验证（Windows 推荐）
+
+不要优先用 **Xcode Cloud**（需 Mac + 提交 `ios/`）。  
+在 Windows 上请用 **EAS 云构建 → TestFlight**，步骤见：
+
+**[`store/PHONE_TEST_BUILD.md`](./store/PHONE_TEST_BUILD.md)**
+
+```powershell
+npx eas-cli login
+npx eas-cli init
+npx eas-cli build --platform ios --profile production
+npx eas-cli submit --platform ios --profile production
+```
+
 ## 上架最短路径（对照指南）
 
 1. **托管合规页**：按 [`docs/GITHUB_PAGES.md`](./docs/GITHUB_PAGES.md) 发布到 GitHub Pages（一条命令替换 URL）  

@@ -1,27 +1,93 @@
 import { router } from 'expo-router';
-import { Alert, Linking, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useCallback, useEffect, useRef } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  Linking,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { Button, Card } from '../src/components/ui';
-import { IAP_PRODUCT_IDS, LINKS } from '../src/constants/links';
+import { LINKS } from '../src/constants/links';
 import { colors } from '../src/constants/theme';
 import { useApp } from '../src/context/AppContext';
+import { useIap } from '../src/iap/IapProvider';
 import { useI18n } from '../src/i18n/I18nContext';
 
 export default function PaywallScreen() {
   const { isPro, unlockProDemo } = useApp();
   const { t } = useI18n();
+  const {
+    storeReady,
+    connected,
+    purchasing,
+    monthly,
+    yearly,
+    subscribe,
+    restore,
+    retryLoadStore,
+    lastError,
+  } = useIap();
+
+  const storeErrorText =
+    lastError === 'store_connect_failed'
+      ? t('paywall.storeConnectFailed')
+      : lastError === 'store_no_products'
+        ? t('paywall.storeNoProducts')
+        : lastError === 'store_fetch_timeout'
+          ? t('paywall.storeFetchTimeout')
+          : lastError;
+  const wasPro = useRef(isPro);
+
+  useEffect(() => {
+    if (!wasPro.current && isPro) {
+      Alert.alert(t('paywall.alreadyTitle'), t('paywall.purchaseSuccess'));
+      router.back();
+    }
+    wasPro.current = isPro;
+  }, [isPro, t]);
 
   const open = (url: string) => {
     void Linking.openURL(url);
   };
 
-  const subscribePlaceholder = (plan: 'monthly' | 'yearly') => {
-    Alert.alert(
-      t('paywall.iapTitle'),
-      t('paywall.iapBody', {
-        id: plan === 'monthly' ? IAP_PRODUCT_IDS.monthly : IAP_PRODUCT_IDS.yearly,
-      }),
-    );
-  };
+  const onSubscribe = useCallback(
+    async (plan: 'monthly' | 'yearly') => {
+      if (Platform.OS !== 'ios') {
+        Alert.alert(t('paywall.iapTitle'), t('paywall.storeUnavailable'));
+        return;
+      }
+      if (!storeReady) {
+        Alert.alert(t('paywall.iapTitle'), t('paywall.storeLoading'));
+        return;
+      }
+      const result = await subscribe(plan);
+      if (result.ok) return;
+      if (result.reason === 'cancelled') return;
+      Alert.alert(
+        t('paywall.iapTitle'),
+        lastError || t('paywall.purchaseFailed'),
+      );
+    },
+    [storeReady, subscribe, lastError, isPro, t],
+  );
+
+  const onRestore = useCallback(async () => {
+    if (Platform.OS !== 'ios') {
+      Alert.alert(t('paywall.restoreTitle'), t('paywall.storeUnavailable'));
+      return;
+    }
+    const result = await restore();
+    if (result.ok && result.reason === 'none') {
+      Alert.alert(t('paywall.restoreTitle'), t('paywall.restoreNone'));
+      return;
+    }
+    if (result.ok) return;
+    Alert.alert(t('paywall.restoreTitle'), lastError || t('paywall.purchaseFailed'));
+  }, [restore, lastError, t]);
 
   if (isPro) {
     return (
@@ -51,11 +117,39 @@ export default function PaywallScreen() {
     t('paywall.f12'),
   ];
 
+  const monthlyPrice = monthly?.displayPrice ?? '¥15';
+  const yearlyPrice = yearly?.displayPrice ?? '¥98';
+  const iosStore = Platform.OS === 'ios';
+  const canBuy = iosStore && connected && !purchasing;
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: colors.bg }} contentContainerStyle={styles.wrap}>
       <Text style={styles.brand}>{t('paywall.brand')}</Text>
       <Text style={styles.headline}>{t('paywall.headline')}</Text>
       <Text style={styles.desc}>{t('paywall.desc')}</Text>
+
+      {iosStore && !connected && !storeErrorText ? (
+        <View style={styles.storeRow}>
+          <ActivityIndicator color={colors.brand} />
+          <Text style={styles.storeHint}>{t('paywall.storeLoading')}</Text>
+        </View>
+      ) : null}
+      {iosStore && storeErrorText ? (
+        <View style={styles.storeErrorBox}>
+          <Text style={styles.storeErrorText}>{storeErrorText}</Text>
+          <Button
+            label={t('paywall.retryStore')}
+            variant="secondary"
+            onPress={() => void retryLoadStore()}
+          />
+        </View>
+      ) : null}
+      {iosStore && connected && !monthly && !yearly && !storeErrorText ? (
+        <View style={styles.storeRow}>
+          <ActivityIndicator color={colors.brand} />
+          <Text style={styles.storeHint}>{t('paywall.storeLoading')}</Text>
+        </View>
+      ) : null}
 
       <Card style={{ marginTop: 16, gap: 12 }}>
         {features.map((f) => (
@@ -68,23 +162,25 @@ export default function PaywallScreen() {
       <View style={styles.prices}>
         <Card style={styles.priceCard}>
           <Text style={styles.priceLabel}>{t('paywall.monthly')}</Text>
-          <Text style={styles.price}>¥15</Text>
+          <Text style={styles.price}>{monthlyPrice}</Text>
           <Text style={styles.priceHint}>{t('paywall.perMonth')}</Text>
           <View style={{ height: 8 }} />
           <Button
             label={t('paywall.subscribeMonthly')}
-            onPress={() => subscribePlaceholder('monthly')}
+            disabled={!canBuy}
+            onPress={() => void onSubscribe('monthly')}
           />
         </Card>
         <Card style={[styles.priceCard, styles.priceBest]}>
           <Text style={styles.badge}>{t('paywall.best')}</Text>
           <Text style={styles.priceLabel}>{t('paywall.yearly')}</Text>
-          <Text style={styles.price}>¥98</Text>
+          <Text style={styles.price}>{yearlyPrice}</Text>
           <Text style={styles.priceHint}>{t('paywall.perYear')}</Text>
           <View style={{ height: 8 }} />
           <Button
             label={t('paywall.subscribeYearly')}
-            onPress={() => subscribePlaceholder('yearly')}
+            disabled={!canBuy}
+            onPress={() => void onSubscribe('yearly')}
           />
         </Card>
       </View>
@@ -92,7 +188,8 @@ export default function PaywallScreen() {
       <Button
         label={t('paywall.restore')}
         variant="secondary"
-        onPress={() => Alert.alert(t('paywall.restoreTitle'), t('paywall.restoreBody'))}
+        disabled={purchasing || (iosStore && !connected)}
+        onPress={() => void onRestore()}
       />
       <Button label={t('paywall.continueFree')} variant="ghost" onPress={() => router.back()} />
 
@@ -156,6 +253,10 @@ const styles = StyleSheet.create({
   priceLabel: { color: colors.muted, fontWeight: '700' },
   price: { fontSize: 28, fontWeight: '800', color: colors.ink },
   priceHint: { color: colors.muted, fontSize: 12, textAlign: 'center' },
+  storeRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 8 },
+  storeHint: { color: colors.muted, fontSize: 14 },
+  storeErrorBox: { marginTop: 8, gap: 8 },
+  storeErrorText: { color: colors.danger, fontSize: 13, lineHeight: 20 },
   legal: {
     marginTop: 8,
     fontSize: 11,

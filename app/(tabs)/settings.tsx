@@ -1,8 +1,9 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   Alert,
   Linking,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -12,15 +13,17 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Card, Field } from '../../src/components/ui';
 import { FREE_EXPORT_LIMIT } from '../../src/constants/entitlements';
-import { LINKS } from '../../src/constants/links';
+import { IAP_PRODUCT_IDS, LINKS } from '../../src/constants/links';
 import { colors } from '../../src/constants/theme';
 import { useApp } from '../../src/context/AppContext';
+import { useIap } from '../../src/iap/IapProvider';
 import type { AppLocaleId } from '../../src/i18n';
 import { useI18n } from '../../src/i18n/I18nContext';
 
 export default function SettingsScreen() {
   const {
     activeLedger,
+    data,
     isPro,
     addMember,
     addCustomCategory,
@@ -28,10 +31,44 @@ export default function SettingsScreen() {
     canAddCustomCategory,
     canAddMember,
   } = useApp();
+  const { restore, purchasing, connected, lastError } = useIap();
   const { t, preference, locales, setPreference } = useI18n();
   const ledger = activeLedger;
   const [memberName, setMemberName] = useState('');
   const [catName, setCatName] = useState('');
+
+  const subscription = data.subscription;
+  const planLabel =
+    subscription.productId === IAP_PRODUCT_IDS.monthly
+      ? t('paywall.monthly')
+      : subscription.productId === IAP_PRODUCT_IDS.yearly
+        ? t('paywall.yearly')
+        : subscription.productId ?? '—';
+  const subSourceLine =
+    !isPro
+      ? null
+      : subscription.source === 'demo'
+        ? t('settings.subSourceDemo')
+        : subscription.source === 'store' || subscription.productId
+          ? t('settings.subSourceStore')
+          : t('settings.subSourceUnknown');
+
+  const onRestore = useCallback(async () => {
+    if (Platform.OS !== 'ios') {
+      Alert.alert(t('paywall.restoreTitle'), t('paywall.storeUnavailable'));
+      return;
+    }
+    const result = await restore();
+    if (result.ok && result.reason === 'none') {
+      Alert.alert(t('paywall.restoreTitle'), t('paywall.restoreNone'));
+      return;
+    }
+    if (result.ok) return;
+    Alert.alert(t('paywall.restoreTitle'), lastError || t('paywall.purchaseFailed'));
+  }, [restore, lastError, t]);
+
+  const iosStore = Platform.OS === 'ios';
+  const canRestore = iosStore && connected && !purchasing;
 
   return (
     <SafeAreaView style={styles.safe} edges={['bottom']}>
@@ -142,6 +179,13 @@ export default function SettingsScreen() {
         <Card>
           <Text style={styles.title}>{t('settings.subscription')}</Text>
           <Text style={styles.value}>{isPro ? t('settings.pro') : t('settings.free')}</Text>
+          {isPro && subSourceLine ? <Text style={styles.meta}>{subSourceLine}</Text> : null}
+          {isPro && subscription.productId ? (
+            <>
+              <Text style={styles.meta}>{t('settings.subPlan', { plan: planLabel })}</Text>
+              <Text style={styles.metaSmall}>{t('settings.subProductId', { id: subscription.productId })}</Text>
+            </>
+          ) : null}
           <Text style={styles.meta}>
             {t('settings.subHint', { limit: FREE_EXPORT_LIMIT })}
           </Text>
@@ -155,6 +199,17 @@ export default function SettingsScreen() {
               onPress={() => Linking.openURL('https://apps.apple.com/account/subscriptions')}
             />
           )}
+          {!isPro && iosStore ? (
+            <>
+              <View style={{ height: 8 }} />
+              <Button
+                label={t('settings.restorePurchases')}
+                variant="ghost"
+                disabled={!canRestore}
+                onPress={() => void onRestore()}
+              />
+            </>
+          ) : null}
         </Card>
 
         <Card>
@@ -206,6 +261,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 14, fontWeight: '700', color: colors.muted },
   value: { marginTop: 8, fontSize: 20, fontWeight: '800', color: colors.ink },
   meta: { marginTop: 8, color: colors.muted, lineHeight: 20 },
+  metaSmall: { marginTop: 4, color: colors.muted, fontSize: 12, lineHeight: 18 },
   langWrap: { marginTop: 12, flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   langChip: {
     borderRadius: 999,

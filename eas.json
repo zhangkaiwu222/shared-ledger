@@ -14,7 +14,8 @@
     "preview": {
       "distribution": "internal",
       "ios": {
-        "simulator": false
+        "simulator": false,
+        "resourceClass": "m-medium"
       }
     },
     "production": {
@@ -27,9 +28,10 @@
   "submit": {
     "production": {
       "ios": {
-        "appleId": "YOUR_APPLE_ID@example.com",
-        "ascAppId": "YOUR_APP_STORE_CONNECT_APP_ID",
-        "appleTeamId": "YOUR_TEAM_ID"
+        "ascAppId": "6827106141",
+        "ascApiKeyPath": "./secrets/AuthKey_P8W8B6ZTXW.p8",
+        "ascApiKeyIssuerId": "eee92558-8a20-44d9-9ca3-49dbf97b9d15",
+        "ascApiKeyId": "P8W8B6ZTXW"
       }
     }
   }

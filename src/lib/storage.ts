@@ -68,7 +68,14 @@ function migrate(parsed: Record<string, unknown>): AppData {
   const subscription = {
     ...base.subscription,
     ...((parsed.subscription as object) || {}),
-  };
+  } as AppData['subscription'];
+  if (subscription.isPro && !subscription.source) {
+    if (subscription.demoUnlockedAt) {
+      subscription.source = 'demo';
+    } else if (subscription.productId) {
+      subscription.source = 'store';
+    }
+  }
 
   let ledgers: Ledger[] = [];
   if (Array.isArray(parsed.ledgers) && parsed.ledgers.length) {
