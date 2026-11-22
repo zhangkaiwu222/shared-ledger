@@ -71,11 +71,5 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - ios/ios/*.app.dSYM.zip
-
-    publishing:
-      app_store_connect:
-        auth: api_key
-        api_key: $APP_STORE_CONNECT_API_KEY_KEY
-        key_id: $APP_STORE_CONNECT_API_KEY_KEY_ID
-        issuer_id: $APP_STORE_CONNECT_API_KEY_ISSUER_ID
-        submit_to_testflight: true
+    # Note: publishing to App Store Connect is done separately via `eas submit --path`
+    # using the produced IPA (this Codemagic plan only allows `auth: integration`).
