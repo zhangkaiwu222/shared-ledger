@@ -3,7 +3,7 @@
 # Signing uses the App Store Connect API key (auto-created cert + profile),
 # no .p12 / .mobileprovision needs to be committed to the repo.
 #
-# Required secret variables in Codemagic UI -> Environment variables (app level, "Secret" checked):
+# Required secret variables (already configured in Codemagic group "appstore_signing"):
 #   APP_STORE_CONNECT_API_KEY_KEY_ID      = P8W8B6ZTXW
 #   APP_STORE_CONNECT_API_KEY_ISSUER_ID   = eee92558-8a20-44d9-9ca3-49dbf97b9d15
 #   APP_STORE_CONNECT_API_KEY_KEY         = <base64 of secrets/AuthKey_P8W8B6ZTXW.p8 contents>
@@ -20,6 +20,8 @@ workflows:
       vars:
         BUNDLE_ID: com.zhangkaiwu222.sharedledger
       xcode: latest
+      groups:
+        - appstore_signing
 
     triggering:
       events:
@@ -69,3 +71,11 @@ workflows:
     artifacts:
       - build/ios/ipa/*.ipa
       - ios/ios/*.app.dSYM.zip
+
+    publishing:
+      app_store_connect:
+        auth: api_key
+        api_key: $APP_STORE_CONNECT_API_KEY_KEY
+        key_id: $APP_STORE_CONNECT_API_KEY_KEY_ID
+        issuer_id: $APP_STORE_CONNECT_API_KEY_ISSUER_ID
+        submit_to_testflight: true
